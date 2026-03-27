@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Todoリスト(自分用)
+    </title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div id="app">
+        <div class="background-container">
+        <div v-for="n in 15" :key="n" class="circle">
+            <div class="circle-inner"></div>
+            </div>
+        </div>
+            <h1 class="h1-decoration">
+                <span>T</span>
+                <span>O</span>
+                <span>D</span>
+                <span>O</span>
+                <span>リ</span>
+                <span>ス</span>
+                <span>ト</span>
+            </h1>
+
+            <div class="add-form">
+        <form method="POST" action="{% url 'Todo_App:add_todo' %}">
+            {% csrf_token %} 
+            <div class="task-content-input">
+                {{ form.title }}
+            </div>
+            <div class="task-description-input">
+                {{ form.description }}
+            </div>
+            <div class="task-deadline-input">
+            <label for="id_deadline" class="deadline-label">締め切り：</label>
+            {{ form.deadline }}
+            {% if form.deadline.errors %}
+        <div class="error-message">
+            {% for error in form.deadline.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+        </div>
+        <div class="task-priority-input">
+            <label for="id_priority" class="priority-label">優先度：</label>
+             {{ form.priority }}
+            </div>
+            <button type="submit" class="add-button">タスクを追加</button>
+        </form>
+            </div>
+
+                <hr>
+
+            <div class="todo-container">
+        
+        <div class="task-column incomplete-column">
+            <h2>未完了タスク ({{ incomplete_todos.count }}件)</h2>
+            
+            {% if incomplete_todos %}
+                {% for item in incomplete_todos %}
+                    <div class="todo-item" id="todo-{{ item.pk }}">
+                        <div class="todo-details">
+                            <h3>{{ item.title }}</h3>
+                            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+                             <small class="deadline-text">締め切り: {{ item.deadline|date:"Y/m/d" }}</small><br>
+                            <small>作成日: {{ item.created_at|date:"Y/m/d" }}</small><br>
+                            <small>優先度: {{ item.priority }}</small>
+                        </div>
+                        
+                        <div class="actions">
+                            <form method="POST" action="{% url 'Todo_App:update_completed' item.pk %}" class="inline-form complete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="complete-btn">出来た！</button>
+                            </form>
+                            <form method="POST" action="{% url 'Todo_App:delete_todo' item.pk %}" class="inline-form delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn" onclick="return confirm('削除しますか？');">削除</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">未完了のタスクはありません。</p>
+            {% endif %}
+            
+        </div>
+        
+        <div class="task-column complete-column">
+            <h2>完了タスク ({{ complete_todos.count }}件)</h2>
+            
+            {% if complete_todos %}
+                {% for item in complete_todos %}
+                    <div class="todo-item completed" id="todo-{{ item.pk }}">
+                         <div class="todo-details">
+                            <h3>{{ item.title }}</h3>
+                            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+                            <small>完了日: {{ item.created_at|date:"Y/m/d H:i" }}</small>
+                        </div>
+                        
+                        <div class="actions">
+                            <form method="POST" action="{% url 'Todo_App:update_completed' item.pk %}" class="inline-form complete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="incomplete-btn">未完了に戻す</button>
+                            </form>
+                            <form method="POST" action="{% url 'Todo_App:delete_todo' item.pk %}" class="inline-form delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="delete-btn" onclick="return confirm('削除しますか？');">削除</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-message">完了したタスクはまだありません。</p>
+            {% endif %}
+            
+            </div>
+            </div>
+    </div>
+ </div>
+ <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
