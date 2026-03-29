@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 class TodoItemForm(forms.ModelForm):
     class Meta:
         model = TodoItem
-        # フォームでユーザーに入力させるフィールドを指定
+        # 優先度の選択肢を定義
         fields = ['title', 'description', 'deadline','priority']
         
         # フィールドごとのカスタマイズ
@@ -22,12 +22,13 @@ class TodoItemForm(forms.ModelForm):
             }
         
         # 締め切り日のバリデーションを追加
+        # cleaned_dataはあるオブジェクトの属性値の中でバリデーションをクリアしたものだけを辞書形式で格納したもの
     def clean_deadline(self):
         deadline = self.cleaned_data.get('deadline')
         
-        # 1. 過去の日付（昨日以前）をチェック
+        # 1. 過去の日付（昨日以前）の入力を禁止
         if deadline and deadline < datetime.date.today():
-            raise ValidationError("過去の日付は設定できません。")
+            raise ValidationError("不正な入力です。過去の日付は選択できません")
             
         return deadline        
 

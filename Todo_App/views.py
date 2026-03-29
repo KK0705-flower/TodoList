@@ -29,12 +29,12 @@ def list_todos(request):
 #request引数にはPOSTの情報や、セッション情報が格納されている。
 #template_name引数には、表示させるテンプレートを指定する。templateフォルダ起点の相対パスで指定しなければならない。
 #context引数には、辞書型のデータを指定する。
-#参考サイト：https://office54.net/python/django/views-render-how-to
+
 
 
 @require_POST
 @require_POST
-def add_todo(request):
+def add_todo(request): #タスクを追加するための関数
     form = TodoItemForm(request.POST)
     
     if form.is_valid():
@@ -42,9 +42,9 @@ def add_todo(request):
         return redirect('Todo_App:list_todos')
     
     # バリデーションエラー時の処理 
-    all_items = TodoItem.objects.all().order_by('created_at')
-    incomplete_todos = all_items.filter(completed=False)
-    complete_todos = all_items.filter(completed=True)
+    all_items = TodoItem.objects.all().order_by('created_at')#すべてのタスクを作成日時の順番で取得
+    incomplete_todos = all_items.filter(completed=False)#すべてのタスクのうち、未完了タスクを取得
+    complete_todos = all_items.filter(completed=True)#すべてのタスクのうち、完了タスクを取得
     
     context = {
         'incomplete_todos': incomplete_todos,
@@ -55,10 +55,10 @@ def add_todo(request):
     return render(request, 'Todo_App/list.html', context)
 
 @require_POST
-def update_completed(request, pk):#
-    item = get_object_or_404(TodoItem, pk=pk)
+def update_completed(request, pk):#タスクの完了/未完了状態を管理する。
+    item = get_object_or_404(TodoItem, pk=pk) #pkをもとにタスクを取得。なければエラーを返す。
     
-    item.completed = not item.completed
+    item.completed = not item.completed #notはTrueの場合はFalseにする。指定した値を反転する。
     
     item.save()
     
