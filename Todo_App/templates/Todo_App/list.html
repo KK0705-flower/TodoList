@@ -8,9 +8,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div id="app">
+    <div id="app"><!--Vueアプリーケーション-->
         <div class="background-container">
-        <div v-for="n in 15" :key="n" class="circle">
+        <div v-for="n in 15" :key="n" class="circle"><!--Vueで背後のオブジェクトを繰り返す-->
             <div class="circle-inner"></div>
             </div>
         </div>
@@ -56,7 +56,7 @@
 
             <div class="todo-container">
         
-        <div class="task-column incomplete-column">
+        <div class="task-column incomplete-column"><!--未完了のタスク-->
             <h2>未完了タスク ({{ incomplete_todos.count }}件)</h2>
             
             {% if incomplete_todos %}
@@ -71,11 +71,11 @@
                         </div>
                         
                         <div class="actions">
-                            <form method="POST" action="{% url 'Todo_App:update_completed' item.pk %}" class="inline-form complete-form">
+                            <form method="POST" action="{% url 'Todo_App:update_completed' item.pk %}" class="inline-form complete-form"><!--Viewのupdate_completed関数を用いて、未完了のタスクを完了状態に変更する-->
                                 {% csrf_token %}
                                 <button type="submit" class="complete-btn">出来た！</button>
                             </form>
-                            <form method="POST" action="{% url 'Todo_App:delete_todo' item.pk %}" class="inline-form delete-form">
+                            <form method="POST" action="{% url 'Todo_App:delete_todo' item.pk %}" class="inline-form delete-form"><!--Viewのdelete_todo関数を用いて、タスクを削除する-->
                                 {% csrf_token %}
                                 <button type="submit" class="delete-btn" onclick="return confirm('削除しますか？');">削除</button>
                             </form>
@@ -88,7 +88,7 @@
             
         </div>
         
-        <div class="task-column complete-column">
+        <div class="task-column complete-column"><!--完了済のタスク-->
             <h2>完了タスク ({{ complete_todos.count }}件)</h2>
             
             {% if complete_todos %}
@@ -97,15 +97,15 @@
                          <div class="todo-details">
                             <h3>{{ item.title }}</h3>
                             {% if item.description %}<p>{{ item.description }}</p>{% endif %}
-                            <small>完了日: {{ item.created_at|date:"Y/m/d H:i" }}</small>
+                            <small>完了日: {{ item.created_at|date:"Y/m/d H:i" }}</small><!--作成日時をy/m/d h:iで表示。y/m/d h:iは年/月/日/時:分を指す-->
                         </div>
                         
                         <div class="actions">
-                            <form method="POST" action="{% url 'Todo_App:update_completed' item.pk %}" class="inline-form complete-form">
+                            <form method="POST" action="{% url 'Todo_App:update_completed' item.pk %}" class="inline-form complete-form"><!--Viewのupdate_completed関数を用いて、完了済のタスクを未完了に戻す-->
                                 {% csrf_token %}
                                 <button type="submit" class="incomplete-btn">未完了に戻す</button>
                             </form>
-                            <form method="POST" action="{% url 'Todo_App:delete_todo' item.pk %}" class="inline-form delete-form">
+                            <form method="POST" action="{% url 'Todo_App:delete_todo' item.pk %}" class="inline-form delete-form"><!--Viewのdelete_todo関数を用いて、タスクを削除する-->
                                 {% csrf_token %}
                                 <button type="submit" class="delete-btn" onclick="return confirm('削除しますか？');">削除</button>
                             </form>
